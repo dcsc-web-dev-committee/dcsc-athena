@@ -11,6 +11,9 @@ def getWeekDays(date):
 	weekday = date.weekday()
 	return [date + dt.timedelta(days = offset) for offset in range(0 - weekday, 7 - weekday)]
 
+def getDayAsString(i):
+	return ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][i]
+
 def getSchedule(date, course_dept, course_num):
 	"""
 	Performs heavy lifting of core database queries
@@ -27,18 +30,30 @@ def getSchedule(date, course_dept, course_num):
 	# TODO: filter out WeeklyTimeSlots that exists outside the bounds of the ActiveTerm
 	# TODO: check for TimeOffs
 	# TODO: add MakeUp hours
-	# TODO: filter out WeeklyTimeSlots that exists outside the bounds of the ActiveTerm
-	# TODO: filter out WeeklyTimeSlots that exists outside the bounds of the ActiveTerm
+	# TODO: check for holidays
 
+	schedule = {}
 
+	for timeslot in timeslots:
+		# Get day and time in question
+		day = getDayAsString(timeslot.day)
 
-	return timeslots
+		# Set reference to which day we are looking at
+		if not day in schedule.keys():
+			day_timeslots = schedule[day] = []
+
+		# Get tutors in timeslot that actually match the course
+		tutors = timeslot.tutor_set.filter(subjects__coursedept__iexact = course_dept, subjects__coursenum__iexact = course_num)
+
+		day_timeslots.append({'halfhour': timeslot.halfhour, 'tutors': [tutor.name for tutor in tutors]})
+
+	return schedule
 
 def getScheduleJSON(date, course_dept, course_num):
 	"""
 	Gets a schedule from the database and nicely formats it in JSON for the frontend
 	"""
 
-	timeslots = getSchedule(date, course_dept, course_num)
+	schedule = getSchedule(date, course_dept, course_num)
 
-	return timeslots
+	return schedule

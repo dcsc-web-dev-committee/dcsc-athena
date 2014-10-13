@@ -26,6 +26,5 @@ class AjaxSearch(View):
 
 		query_date = dt.date(date_year, date_month, date_day)
 		schedule_results = schedulesearch.getScheduleJSON(query_date, course_dept, course_num)
-		schedule_results = list(map(str, schedule_results))
 
 		return JsonResponse({'status': {'type': 'success'}, 'timeslots': schedule_results}, safe = False)
