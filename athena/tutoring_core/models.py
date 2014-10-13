@@ -8,19 +8,19 @@ class Tutor(models.Model):
 	name = models.CharField(max_length = 100)
 	bio = models.TextField()
 	times = models.ManyToManyField('WeeklyTimeSlot')
-	subjects = models.ManyToManyField('Subject')
+	subjects = models.ManyToManyField('Course')
 	term = models.ManyToManyField('ActiveTerm')
 
 	def __str__(self):
-		return '<Tutor: {0}>'.format(self.name)
+		return '{0}'.format(self.name)
 
-class Subject(models.Model):
+class Course(models.Model):
 	name = models.CharField(max_length = 100)
 	coursedept = models.CharField(max_length = 5)
 	coursenum = models.CharField(max_length = 5)
 
 	def __str__(self):
-		return '<Subject: {0} {1} ({2})>'.format(self.coursedept, self.coursenum, self.name)
+		return '{0} {1} ({2})'.format(self.coursedept, self.coursenum, self.name)
 
 # Normal schedule. Time slots are used instead of a datetime range for 
 # regularity and conservation.
@@ -31,17 +31,25 @@ class Subject(models.Model):
 # Lastly, any Makeups are rendered for the schedule's range
 
 class WeeklyTimeSlot(models.Model):
-	# From 0 (Sunday) to 6 (Saturday)
+	# From 0 (Monday) to 6 (Sunday)
 	day = models.IntegerField()
 	# From 0 (00:00 - 00:29) to 47 (23:30 - 23:59)
 	halfhour = models.IntegerField()
+
+	def __str__(self):
+		return '{0}, {1}'.format(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][self.day], self.halfhour)
+
 
 # Below exists things beyond core functionality
 
 # Describes the term (e.g; A UC Davis quarter) that a tutor will serve
 class ActiveTerm(models.Model):
+	name = models.CharField(max_length = 100)
 	startdatetime = models.DateTimeField()
 	enddatetime = models.DateTimeField()
+
+	def __str__(self):
+		return '{0}'.format(self.name)
 
 # One off/special cases for when a tutor needs some time off
 class TimeOff(models.Model):
