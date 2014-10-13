@@ -11,10 +11,16 @@ class Tutor(models.Model):
 	subjects = models.ManyToManyField('Subject')
 	term = models.ManyToManyField('ActiveTerm')
 
+	def __str__(self):
+		return '<Tutor: {0}>'.format(self.name)
+
 class Subject(models.Model):
 	name = models.CharField(max_length = 100)
-	dept = models.CharField(max_length = 5)
+	coursedept = models.CharField(max_length = 5)
 	coursenum = models.CharField(max_length = 5)
+
+	def __str__(self):
+		return '<Subject: {0} {1} ({2})>'.format(self.coursedept, self.coursenum, self.name)
 
 # Normal schedule. Time slots are used instead of a datetime range for 
 # regularity and conservation.
