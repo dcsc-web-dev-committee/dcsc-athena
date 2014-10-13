@@ -15,6 +15,8 @@ class Tutor(models.Model):
 		return '{0}'.format(self.name)
 
 class Course(models.Model):
+	# TODO: ensure only one object created per unqiue "value"
+
 	name = models.CharField(max_length = 100)
 	coursedept = models.CharField(max_length = 5)
 	coursenum = models.CharField(max_length = 5)
@@ -31,6 +33,8 @@ class Course(models.Model):
 # Lastly, any Makeups are rendered for the schedule's range
 
 class WeeklyTimeSlot(models.Model):
+	# TODO: ensure only one object created per unqiue "value"
+
 	# From 0 (Monday) to 6 (Sunday)
 	day = models.IntegerField()
 	# From 0 (00:00 - 00:29) to 47 (23:30 - 23:59)
@@ -68,3 +72,5 @@ class Makeup(models.Model):
 # When a Tutor is created, they will be added to all existing Holidays
 class Holiday(models.Model):
 	tutors = models.ManyToManyField(Tutor)
+	startdatetime = models.DateTimeField()
+	enddatetime = models.DateTimeField()

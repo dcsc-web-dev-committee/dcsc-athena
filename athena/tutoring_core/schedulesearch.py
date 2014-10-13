@@ -16,6 +16,8 @@ def getSchedule(date, course_dept, course_num):
 	Performs heavy lifting of core database queries
 	"""
 
+	weekdays = getWeekDays(date)
+
 	# First, get all WeeklyTimeSlots that have a Tutor who has a Course which matches the query 
 	timeslots = models.WeeklyTimeSlot.objects.filter(tutor__subjects__coursedept__iexact = course_dept, tutor__subjects__coursenum__iexact = course_num)
 
@@ -23,6 +25,12 @@ def getSchedule(date, course_dept, course_num):
 	timeslots = timeslots.filter(tutor__term__startdatetime__lte = date, tutor__term__enddatetime__gte = date)
 
 	# TODO: filter out WeeklyTimeSlots that exists outside the bounds of the ActiveTerm
+	# TODO: check for TimeOffs
+	# TODO: add MakeUp hours
+	# TODO: filter out WeeklyTimeSlots that exists outside the bounds of the ActiveTerm
+	# TODO: filter out WeeklyTimeSlots that exists outside the bounds of the ActiveTerm
+
+
 
 	return timeslots
 
